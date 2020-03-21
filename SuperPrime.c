@@ -1,10 +1,57 @@
-//è¶…çº§ç´ æ•°ï¼šå®ƒæœ¬èº«ï¼Œå„ä½æ•°å­—çš„å’Œï¼Œå„ä½æ•°å­—çš„å¹³æ–¹å’Œï¼Œéƒ½æ˜¯ç´ æ•°ã€‚
-//æ±‚ 100~10000 å†…çš„æ‰€æœ‰è¶…çº§ç´ æ•°ï¼ŒåŠå®ƒä»¬çš„å¹³å‡æ•°ã€‚
+#include<stdio.h>  
+//Çó 100~10000 ÄÚµÄËùÓĞ³¬¼¶ËØÊı£¬¼°ËüÃÇµÄÆ½¾ùÊı¡£ 
+//³¬¼¶ËØÊı£ºËü±¾Éí£¬¸÷Î»Êı×ÖµÄºÍ£¬¸÷Î»Êı×ÖµÄÆ½·½ºÍ£¬¶¼ÊÇËØÊı¡£ 
+//Çó 100~10000 ÄÚµÄËùÓĞ³¬¼¶ËØÊı£¬¼°ËüÃÇµÄÆ½¾ùÊı¡£ 
 
-int isPrime(int x);
-int splitNum(int x, int num[]);
+int num[100]; 
+int isPrime(int x); 
+//int splitNum(int x, int num[]); 
+int main() 
+{ 
+	int Startnum = 0; 
+	int i = 101; 
 
-int main()
-{
-    return 0;
+	for(i=101; i <= 10000; i++) { 
+		if(isPrime(i)) { 
+			int j=0; 
+			int temp = i; 
+			while(temp>0) { 
+				j += temp % 10; 
+				temp = temp / 10; 
+			} 
+			if(isPrime(j)) { 
+				int k=0; 
+				temp = i; 
+				while(temp>0) { 
+					k += (temp%10)*(temp%10); 
+					temp = temp /10; 
+					if(isPrime(k)) { 
+						num[Startnum++] = i; 
+					} 
+				} 
+			} 
+		} 
+	} 
+	double sum; 
+	for(i=0; i< Startnum; i++ ){ 
+		printf("%d\n",num[i]); 
+		sum += num[i]; 
+	} 
+	printf("%f\n",sum/(Startnum+1)); 
+    return 0; 
+} 
+int isPrime(int x) 
+{ 
+	int i=2; 
+
+	for(i=2; i<x; i++) { 
+		if( x % i == 0) { 
+			break; 
+		}  
+	} 
+	if(i == x) { 
+		return 1; 
+	} else { 
+		return 0; 
+	} 
 }
