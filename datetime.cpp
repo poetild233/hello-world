@@ -13,11 +13,8 @@ public:
   void showMoon();  //作业：将当前公历转换为农历显示出来 
 };
 
-<<<<<<< HEAD
-=======
 int DateTime::sth = 0;
 
->>>>>>> upstream/master
 int main() {
   DateTime dt, dt1(2020, 3, 27, 10, 40, 55);
   DateTime dt2(dt), &dt3 = dt;
@@ -25,13 +22,10 @@ int main() {
   dt.showTime();
   dt.showMoon();
   dt1.showTime();
-<<<<<<< HEAD
   dt1.showMoon();
-=======
   dt2.showTime();
   dt3.showTime();
   dt4->showTime();
->>>>>>> upstream/master
   return 0;
 }
 
