@@ -1,103 +1,107 @@
-//作业：完成以下框架的代码细节，程序能编译运行得到正确结果 
+//作业：面向对象设计以下框架的代码细节，程序能编译运行得到正确结果 
 #include <iostream>
 class SuperPrime {
   public:
-  	SuperPrime():number(0) {
+  	SuperPrime():number(0) {  //为什么必须有？ 
+  	  size = 0;
+  	}
+  	SuperPrime(int n):number(n) {
+  	  size = 0;
+  	  split();  //它就是构造对象 
 	}
   	~SuperPrime() {
-	}
-	void SetNum(int n) {    //对每一个set里的number赋值 
-	  int *a = (int *) &number;
-	  *a = n;
+  	  for (int i = 0; i < size; ++i)  //销毁对象 
+		delete N[i]; 
 	}
   	bool isSuperPrime() {
-  	  split(number, N);
-  	  int a = sum();   //和为质数 
-	  int b = multi();   //乘积为质数 
-	  int c = squareSum();   //各个数平方和为质数 
-	  if (isPrime(number) && isPrime(a) && isPrime(b) && isPrime(c))
+  	  SuperPrime a(sum());   //将普通整数转变为对象，a.number = sum 
+	  SuperPrime b(multi());
+	  SuperPrime c(squareSum());
+	  if (isPrime() && a.isPrime() && b.isPrime() && c.isPrime())
 	    return true; 
   	  return false;
 	}
+	int shownum() {
+		return number;
+	}
   private:
   	const int number;
-  	int N[10], size;
-  	bool isPrime(int n) {  //是质数就返回true，不是就false 
-	  int i = 2;  
-  	  for(i=2; i<n; i++ ) {
-  	  	if(n % i == 0) {
-  	  		break;
-			}
-		}
-	  if( i == n - 1 ) {
-	  	return true;
-	  }
-  	  return false;
+  	SuperPrime *N[100];   //对象的指针数组 
+	int size;    //number 的位数 
+  	bool isPrime() { 
+  	  //2到number-1的因子
+	  for(int i=2; i<number; i++) {
+	  	if(number % i == 0 && i != number -1)
+	  		return false;
+	  } 
+  	  return true;
 	}
-	void split(const int number,int *N) {
+	void split() {   //工厂方法设计模式 
 	  // number split into N
-	  int i=0, a=number;
-	  for (i = 0; a > 0; i++) {
-	  	N[i] = a % 10;
-	  	a = a / 10;
-	  }
-	  size = i + 1;
+	  int temp = number;
+	  while(temp > 0) {
+	  	int n = temp % 10;
+	  	temp /= 10;
+	  	N[size] = new SuperPrime(n);   //构造对象 ,这里变成对象可以用superprime的isprime函数 
+	  	size += 1;
+	  } 
 	}
 	int sum() {
-	  int a;
-	  for(int i=0; i< size; i++) {
-	  	a += N[i];
-	  } 
-	  return a;
+      int sum;
+	  for(int i=0; i< size; i++ ) {
+	  	sum += N[i]->number;
+	  }
+	  return sum;
 	}
 	int multi() {
-	  int b;
-	  for(int i=0; i< size; i++) {
-	  	b *= N[i];
+	  int mul;
+	  for(int i=0; i< size; i++ ) {
+	  	mul *= N[i]->number;
 	  }
-	  return b;
+	  return mul;
 	}
 	int squareSum() {
-	  int c;
-	  for(int i = 0; i< size; i++)
-	    c += (N[i] * N[i]);
-	  return c;
+	  int sqsum;
+	  for(int i=0; i< size; i++) {
+	  	sqsum += (N[i]->number * N[i]->number);
+	  }
+	  return sqsum;
 	}
 };
 class Set {
   public:
   	Set(int from, int to) {
-  	  size = to - from;
-  	  begin = from;  end = to;
+  	  init = from;
+  	  size = from - to + 1;
 	}
   	~Set() {
 	}
   	int count() {
   	  int count = 0;
-  	  int i =0;
-  	  for (i = 0; i < size; i++)
-  	  	set[i].SetNum(i+begin);
-  	    if(set[i].isSuperPrime())
+  	  for (int i = 0; i < size; i++,init++)
+  	    if(set[init].isSuperPrime())
   	      count += 1;
 	  return count; 
 	}
   	int sum() {
   	  int sum = 0;
-  	  for(int i=0; i<size; i++) {
-  	  	set[i].SetNum(i+begin);
-  	  	if(set[i].isSuperPrime())
-  	  	  sum += set[i].number;
-		}
+  	  for (int i = 0; i < size; i++,init++)
+  	    if(set[init].isSuperPrime())
+  	      sum += set[init].shownum();
+  	
 	  return sum; 
 	}
   private:
   	SuperPrime set[1000];
+  	int init;
   	int size;
-  	int begin, end;
 };
 int main() {
-  Set ss(100, 999);
-  std::cout << "How Many: " << ss.count() << std::endl;
-  std::cout << "Sum is " << ss.sum() << std::endl;
+  SuperPrime sp(113);
+  if (sp.isSuperPrime())
+    std::cout << "113 is SuperPrime" << std::endl;
+  else
+    std::cout << "113 is NOT SuperPrime" << std::endl;
   return 0;
 }
+
