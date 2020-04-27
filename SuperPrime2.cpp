@@ -9,28 +9,30 @@ class Prime {
 	~Prime() {
 	}
   	bool isPrime() { 
-  	  //2到number-1的因子
-		 for(int i=2; i<number; i++) {
-	  	if(number % i == 0 && i != number -1)
-	  		return false;
-	  } 
-  	  return true; 
+  	  //2到number-1的因子 
+  	  for(int i=2;i<number;i++) {
+  	  	if(number%i == 0)
+  	  	return false;
+		}
+  	  return true;
 	}
   private:
   	const int number;
+  	friend class PrimeSet; 
+  	friend class SuperPrimeSet;
 }; 
 class PrimeSet {
   public:
   	PrimeSet(int size) {
   	  //集合的构造什么？ 
-  	  N = new Prime*[size];
+  	  N = new Prime*[size];         //size个指向prime的指针 
   	  this->size = size;
   	  index = 0;
 	}
 	~PrimeSet() {
   	  for (int i = 0; i < index; ++i)  //销毁对象 
-		delete N[i];  //删除指向prime的指针 
-	  delete[] N;    //再删除指向prime指针数组的指针 
+		delete N[i]; 
+	  delete[] N;
 	}
 	bool add(int n) {
 	  if(index == size)  return false;
@@ -38,6 +40,27 @@ class PrimeSet {
 	  N[index] = p;
 	  index += 1;
 	  return true;
+	}
+	int sum() {
+		int sum=0;
+		for(int i=0;i<size;i++) {
+			sum += N[i]->number;
+		}
+	  return sum;
+	}
+	int multi() {
+		int multi = 1;
+		for(int i=0;i<size;i++) {
+			multi *= N[i]->number;
+		}
+	  return multi;
+	}
+	int squareSum() {
+		int square = 0;
+		for(int i=0;i<size;i++) {
+			square += (N[i]->number * N[i]->number);
+		}
+	  return square;
 	}
 	bool isAllPrime() {
 	  for(int i = 0; i < index; i++)
@@ -49,79 +72,39 @@ class PrimeSet {
   	Prime **N;
 	int size, index;
 };
-class SuperPrime {
+class SuperPrime : public Prime {
   public:
-  	SuperPrime():number(0), pset(3) {  //为什么必须有？ 
-  		size=0;
+  	SuperPrime():Prime(0),pset(3) {  //为什么必须有？ 
   	}
-  	SuperPrime(int n):number(n), pset(3) {
-  	  size = 0;
-  	  split();  //它就是构造对象 
+  	SuperPrime(int n):Prime(n),pset(3) {
+	  // number split into N
+	  int temp = n;
+	  while(temp > 0) {
+	  	int t = temp % 10;
+	  	temp /= 10;
+	  	pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
+	  } 
 	}
   	~SuperPrime() {
 	}
   	bool isSuperPrime() {
-  	  //怎么使用pset？ 
-  	  Prime p(number);
-	  if (p.isPrime())
+	  if (Prime::isPrime() && pset.isAllPrime())
 	    return true; 
   	  return false;
 	}
-	int shownum() {
-		return number;
-	}
   private:
-  	const int number;
-  	int size;
-  	int numSet[10]; 
-  	PrimeSet pset;     //从number里分出来的三个数 
-	void split() {   //工厂方法设计模式 
-	  // number split into N
-	  int temp = number;
-	  while(temp > 0) {
-	  	int n = temp % 10;
-	  	temp /= 10;
-	  	numSet[size]= n;
-	  	size++;
-	  }
-	  pset.add(sum());  //作业：单个数字为对象？还是和/积/平方和为对象？ 
-	  pset.add(multi());
-	  pset.add(squareSum());
-	}
-	int sum() {
-      int sum;
-	  for(int i=0; i< size; i++ ) {
-	  	sum += numSet[i];
-	  }
-	  return sum;
-	}
-	int multi() {
-	  int mul;
-	  for(int i=0; i< size; i++ ) {
-	  	mul *= numSet[i];
-	  }
-	  return mul;
-	}
-	int squareSum() {
-	  int sqsum;
-	  for(int i=0; i< size; i++) {
-	  	sqsum += (numSet[i] * numSet[i]);
-	  }
-	  return sqsum;
-	}
+  	PrimeSet pset; 
 };
 class SuperPrimeSet {
   public:
   	SuperPrimeSet(int from, int to) {
   	  size = to - from;
-  	  index = 0;
   	  for (int i = from; i < to; i++)
   	    set[i-from] = new SuperPrime(i);
 	}
   	~SuperPrimeSet() {
   	  for(int i = 0; i < size; i++)
   	    delete set[i];
-  	    delete [] set;
 	}
   	int count() {
   	  int count = 0;
@@ -132,10 +115,9 @@ class SuperPrimeSet {
 	}
   	int sum() {
   	  int sum = 0;
-  	  for (; index < size; index++)
-  	    if(set[index]->isSuperPrime())
-  	      sum += set[index]->shownum();
-  	
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i]->isSuperPrime())
+  	      sum += set[i]->number;
 	  return sum; 
 	}
   private:
