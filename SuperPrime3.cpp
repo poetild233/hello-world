@@ -7,11 +7,9 @@ using namespace std;
 class BigPrime {
 public:
   BigPrime(string n){
-  	for(int i=0; i< n.length(); i++) {
-  		num[i] = n[i]; 
-	  }
+  	num = n;
   }
-  virtual bool isPrime() const {
+  bool isPrime() const {
   	
   		//这里需要一个我做不出的判断素数的方法 
     return false;
@@ -26,16 +24,15 @@ public:
   		num[i] = n[i]; 
 	  }
   }
-  virtual bool isPrime() const {
-  		
-  	 if(BigPrime::isprime && BigPrime(sum()).isPrime() 
-	   && BigPrime(squareSum()).isPrime()&& BigPrime(multi).isPrime() )
+  bool isPrime() const {
+  	 if(BigPrime::isPrime() && BigPrime(sum()).isPrime() 
+	   && BigPrime(squareSum()).isPrime()&& BigPrime(multi()).isPrime() )
 	   return true;
 	 return false;
   }
 private:
   string num;
-  string sum() {
+  string sum() const{
   	string a;
   	int temp;
   	for(int i=0; i< num.length(); i++) {
@@ -44,11 +41,11 @@ private:
 	a = (char)temp;
 	return a;
   } 
-  string multi() {
+  string multi() const{
   	string a;
   	int temp;
   }
-  string squareSum() {
+  string squareSum() const{
   	string a;
   	int temp;
   	for(int i=0; i< num.length(); i++) {
@@ -58,12 +55,13 @@ private:
 	return a;
   }
 };
+template<class T>
 class Set {
 public:
   Set(int sz);
   ~Set();
-  bool add(BigPrime *bp);
-  bool remove(BigPrime *bp);
+  bool add(T *bp);
+  bool remove(T *bp);
   int count() const {
   	int ret = 0;
   	for (int i = 0; i < index; i++) {
@@ -76,11 +74,11 @@ public:
   	return 0;
   } 
 private:
-  BigPrime **pset;
+  T **pset;
   int size, index;
 };
 int main() {
-  Set set(1000);
+  Set<BigSuperPrime> set(1000);
   int a;
   string str1,str2;
   cin >> str1 >> str2;
@@ -90,16 +88,17 @@ int main() {
   cout << set.count() << endl;
   return 0;
 } 
-
-Set::Set(int sz):size(sz) {
+template<class T>
+Set<T>::Set(int sz):size(sz) {
   index = 0;
-  pset = new BigPrime*[size];  //分配存储空间 
+  pset = new T*[size];  //分配存储空间 
 }
-
-Set::~Set() {
+template<class T>
+Set<T>::~Set() {
   delete[] pset;  //回收 
 }
-bool Set::add(BigPrime *bp) {
+template<class T>
+bool Set<T>::add(T *bp) {
   pset[index++] = bp;
   return true;
 }
